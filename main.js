@@ -22,18 +22,6 @@ class SlideCanvas {
     var canvasWidth = window.innerWidth - padding * 2;
     var canvasHeight = window.innerHeight - padding * 2;
     this.$el.css("left", padding + "px").css("top", padding + "px").width(canvasWidth).height(canvasHeight);
-
-    // if (this.element) {
-    //   this.element.childElements.forEach((box) => {
-    //     box.layout({
-    //       left: 0,
-    //       top: 0,
-    //       margin: 20,
-    //       width: (canvasWidth/this.element.childElements.length) -40,
-    //       height: 100
-    //     }, animate)
-    //   })
-    // }
   }
 
   addElement (element) {
@@ -63,8 +51,6 @@ class BaseElement {
   }
 }
 
-////
-
 class SimpleBox extends BaseElement {
   constructor(label) {
     super();
@@ -93,12 +79,13 @@ class SimpleContainer extends BaseElement {
   }
 
   layout () {
-    var boxWidth = ((window.innerWidth - 100) / this.childElements.length)
+    var boxWidth = ((window.innerWidth - 120) / this.childElements.length)
 
     for(var i = 0; i < this.childElements.length; i++) {
       this.childElements[i].layout(
         {
-          left: (boxWidth * i) + 10,
+          top: (window.innerHeight - 100) / 3,
+          left: (boxWidth * i) + 20,
           width: boxWidth -20,
           height: 100
         }
