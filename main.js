@@ -12,28 +12,31 @@ class App {
 }
 
 class SlideCanvas {
-  render() {
+  render () {
     this.$el = $("<div/>").addClass("canvas");
     return this.$el;
   }
 
-  layout(animate) {
+  layout (animate) {
     var padding = 50;
     var canvasWidth = window.innerWidth - padding * 2;
     var canvasHeight = window.innerHeight - padding * 2;
     this.$el.css("left", padding + "px").css("top", padding + "px").width(canvasWidth).height(canvasHeight);
 
     if (this.element) {
-      this.element.layout({
-        left: 0,
-        top: 0,
-        width: canvasWidth,
-        height: canvasHeight
-      }, animate);
+      this.element.childElements.forEach((box) => {
+        box.layout({
+          left: 0,
+          top: 0,
+          margin: 20,
+          width: (canvasWidth/this.element.childElements.length) -40,
+          height: 100
+        }, animate)
+      })
     }
   }
 
-  addElement(element) {
+  addElement (element) {
     this.element = element;
     this.element.canvas = this;
     this.$el.append(element.render());
@@ -42,24 +45,25 @@ class SlideCanvas {
 }
 
 class BaseElement {
-  render() {
+  render () {
     this.$el = $("<div/>");
     this.$el.addClass("element");
     return this.$el;
   }
 
-  layout(bounds, animate) {
+  layout (bounds, animate) {
     if (animate) {
       this.$el.animate(bounds);
-    } else{
+    } else {
       this.$el.css(bounds);
     }
   }
 
-  renderUI() {
-
+  renderUI () {
   }
 }
+
+////
 
 class SimpleBox extends BaseElement {
   constructor(label) {
@@ -67,12 +71,10 @@ class SimpleBox extends BaseElement {
     this.label = label;
   }
 
-  render() {
+  render () {
     this.$el = $("<div/>");
     this.$el.addClass("element simplebox");
-
     this.$el.text(this.label);
-
     return this.$el;
   }
 }
@@ -83,34 +85,44 @@ class SimpleContainer extends BaseElement {
     this.childElements = [];
   }
 
-  render() {
+  render () {
     this.$el = $("<div/>");
     this.$el.addClass("element");
-
-    this.addChildElement(new SimpleBox("SimpleBox"));
-
+    this.addChildElement(new SimpleBox(this.childElements.length + 1));
     return this.$el;
   }
 
-  layout(bounds){
-    this.childElements[0].layout(bounds);
+  layout () {
+    var boxWidth = ((window.innerWidth - 50) / this.childElements.length)
+
+    for(var i = 0; i < this.childElements.length; i++) {
+      this.childElements[i].layout(
+        {
+          left: boxWidth * i,
+          top: 0,
+          margin: 20,
+          width: boxWidth,
+          height: 100
+        }
+      )
+    }
   }
 
-  renderUI() {
-    var $button = $("<div/>").addClass("control").text("Change Color");
+  renderUI () {
+    var $button = $("<div/>").addClass("control").text("Add Item");
     this.$el.append($button);
-
     $button.on("click", () => {
-      this.childElements[0].$el.css("background", "orange");
+      this.addChildElement(new SimpleBox(this.childElements.length + 1));
     });
   }
 
-  addChildElement(element) {
+  addChildElement (element) {
     this.childElements.push(element);
     element.parentElement = this;
-
+    console.log(element.parentElement)
     this.$el.append(element.render());
     element.renderUI();
+    this.layout()
   }
 }
 
