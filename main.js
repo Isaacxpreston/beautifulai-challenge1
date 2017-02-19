@@ -23,17 +23,17 @@ class SlideCanvas {
     var canvasHeight = window.innerHeight - padding * 2;
     this.$el.css("left", padding + "px").css("top", padding + "px").width(canvasWidth).height(canvasHeight);
 
-    if (this.element) {
-      this.element.childElements.forEach((box) => {
-        box.layout({
-          left: 0,
-          top: 0,
-          margin: 20,
-          width: (canvasWidth/this.element.childElements.length) -40,
-          height: 100
-        }, animate)
-      })
-    }
+    // if (this.element) {
+    //   this.element.childElements.forEach((box) => {
+    //     box.layout({
+    //       left: 0,
+    //       top: 0,
+    //       margin: 20,
+    //       width: (canvasWidth/this.element.childElements.length) -40,
+    //       height: 100
+    //     }, animate)
+    //   })
+    // }
   }
 
   addElement (element) {
@@ -93,15 +93,13 @@ class SimpleContainer extends BaseElement {
   }
 
   layout () {
-    var boxWidth = ((window.innerWidth - 140) / this.childElements.length)
+    var boxWidth = ((window.innerWidth - 100) / this.childElements.length)
 
     for(var i = 0; i < this.childElements.length; i++) {
       this.childElements[i].layout(
         {
-          left: boxWidth * i,
-          top: 0,
-          margin: 20,
-          width: boxWidth,
+          left: (boxWidth * i) + 10,
+          width: boxWidth -20,
           height: 100
         }
       )
@@ -110,6 +108,9 @@ class SimpleContainer extends BaseElement {
 
   renderUI () {
     var $button = $("<div/>").addClass("control").text("Add Item");
+    $button.css({
+      zIndex: 100
+    })
     this.$el.append($button);
     $button.on("click", () => {
       this.addChildElement(new SimpleBox(this.childElements.length + 1));
@@ -119,7 +120,6 @@ class SimpleContainer extends BaseElement {
   addChildElement (element) {
     this.childElements.push(element);
     element.parentElement = this;
-    console.log(element.parentElement)
     this.$el.append(element.render());
     element.renderUI();
     this.layout()
