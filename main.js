@@ -93,7 +93,7 @@ class SimpleContainer extends BaseElement {
   }
 
   layout () {
-    var boxWidth = ((window.innerWidth - 50) / this.childElements.length)
+    var boxWidth = ((window.innerWidth - 140) / this.childElements.length)
 
     for(var i = 0; i < this.childElements.length; i++) {
       this.childElements[i].layout(
